@@ -5,3 +5,5 @@ const views = new views(src/products.txt)
 
 const routerViews = Router()
 const prodManager = new ProductManager('./products.txt')
+
+export default routerViews;
