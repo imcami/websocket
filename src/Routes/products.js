@@ -42,4 +42,4 @@ routerProd.put('/:id', async(req, res)=>{
 
 
 
-export default  routerProd;
+export default routerProd

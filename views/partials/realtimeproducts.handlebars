@@ -17,3 +17,10 @@ Esta parte trabaja con socket.io
             <li>{{this.name}} - ${{this.price}}</li>
         {{/each}}
     </ul>
+<ul id="product-list">
+  {{#each products}}
+    <li data-product-id="{{this.id}}">{{this.name}} - ${{this.price}} <button class="delete-btn">Delete</button></li>
+  {{/each}}
+</ul>
+
+<script src="/socket.io/socket.io.js"></script>
