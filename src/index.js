@@ -4,12 +4,14 @@ import routerProd from  './Routes/products.js'
 import routerCart from './Routes/cart.js'
 import Routerviews from './Routes/views.js'
 import { Server } from 'socket.io'
-
+import http from 'http'
 
 //Creo el server y le indico que mi url debe estar codificada
 const app = express()
+const http = http.createServer(app)
 const port = 8080
 app.use(express.json)
+const ProductManager = ('/ProductManager.js')
 app.use(express.urlencoded({extended:true}))
 const server =  app.listen(port, () => {
     console.log(`Server on port ${port}`)
@@ -26,13 +28,22 @@ io.on('conection', (socket)=>{
 app.use('./api/products', routerProd)
 app.use('./api/carts', routerCart)
 
+//Escuchar los eventos new-product, update-product y delete-product mediante .on para recibir las actualizaciones de productos
+const prodManager = new prodManager();
 
-app.use((req, res, next) => {
-    req.io = io
-    return next()
-  });
-app.use('./realtimeproducts')
+prodManager.on('new-product', (product) => {
+  io.emit('new-product', product);
+});
 
+prodManager.on('update-product', (product) => {
+  io.emit('update-product', product);
+});
+
+prodManager.on('delete-product', (productId) => {
+  io.emit('delete-product', productId);
+});
+
+  
 
 
 //Handlebars Config
@@ -41,6 +52,26 @@ app.set('view engine', 'handlebars') //vistas de handlebars
 app.set('views', path.resolve(__dirname, './views')) // /src/views path.resolve
 
 
+app.get('/', (req, res, next) => {
+    res.render('main', { products: ProductManager.getProducts() });
+    next();
+  });
+  
+//ruta para realtime products
+  app.get('/realtime-products', (req, res, next) => {
+    res.render('realtimeproducts', { products: ProductManager.getProducts() });
+    next();
+  });
 
+  //404 error
+  app.use((req, res, next) => {
+    res.status(404);
+    res.render('404error');
+  });
+ //About.handlebars
+ app.get('/about', (req, res) => {
+    res.render('about');
+  });
+  
 
 export default index.js

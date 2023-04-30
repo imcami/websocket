@@ -1,5 +1,12 @@
 import {promises as fs} from 'fs' //importo solamente promesas  
 
+//ProductManager escucha el evento new-product mediante emit.io para recibir las actualizaciones de productos 
+const productManager = new ProductManager();
+
+productManager.on('new-product', (product) => {
+  io.emit('new-product', product);
+});
+
 export class ProductManager {
    constructor(path){
         this.path = path //mediante el path hago todas las operaciones del txt
